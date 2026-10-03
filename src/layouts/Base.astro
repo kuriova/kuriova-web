@@ -1,0 +1,105 @@
+---
+import '@fontsource/space-grotesk/latin-700.css';
+import '@fontsource/inter/latin-500.css';
+import '@fontsource/inter/latin-600.css';
+import '../styles/tokens.css';
+import displayFont from '@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2?url';
+import textFont from '@fontsource/inter/files/inter-latin-500-normal.woff2?url';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getUnits, profileUrls } from '../lib/units';
+import { site } from '../site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Social image under public/, 1200×630. */
+  image?: string;
+  /** Unit accent for this page. */
+  accent?: string;
+  noindex?: boolean;
+  /** false drops the site header, for /links. */
+  header?: boolean;
+}
+
+const {
+  title,
+  description,
+  image = '/brand/og-kuriova.png',
+  accent,
+  noindex = false,
+  header = true,
+} = Astro.props;
+
+const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/';
+const canonical = new URL(path, site.url).href;
+const imageUrl = new URL(image, site.url).href;
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.name,
+  url: `${site.url}/`,
+  logo: `${site.url}/brand/icon-512.png`,
+  email: site.email,
+  slogan: site.slogan,
+  sameAs: profileUrls(await getUnits()),
+};
+// Escape "<" so no string in the data can close the script element.
+const jsonLd = JSON.stringify(organization).replace(/</g, '\\u003c');
+const beacon = site.analyticsToken ? JSON.stringify({ token: site.analyticsToken }) : '';
+---
+
+<!doctype html>
+<html lang="en" style={accent ? `--accent: ${accent}` : undefined}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <meta name="theme-color" content="#080C16" />
+    <meta name="color-scheme" content="dark" />
+
+    <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={textFont} as="font" type="font/woff2" crossorigin />
+
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/brand/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/brand/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/brand/icon-180.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {!noindex && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta property="og:locale" content="en_GB" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+
+    <script is:inline type="application/ld+json" set:html={jsonLd} />
+    {
+      beacon && (
+        <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={beacon} />
+      )
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    {header && <Header />}
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import '../scripts/reveal';
+    </script>
+  </body>
+</html>

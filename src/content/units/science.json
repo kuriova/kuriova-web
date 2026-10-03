@@ -1,0 +1,18 @@
+{
+  "slug": "science",
+  "name": "Kuriova Science",
+  "status": "live",
+  "order": 1,
+  "accent": "#00E5FF",
+  "tagline": "The strangest, biggest and most surprising things in space, on Earth and inside you.",
+  "title": "Kuriova Science: documentaries on space, Earth and you",
+  "pillars": ["Space", "Earth", "Body & Mind", "Tech"],
+  "youtubeChannelId": "UCkHzZdZebqBsRbPpwQ4Zcew",
+  "links": {
+    "youtube": "https://www.youtube.com/@kuriovascience",
+    "instagram": "https://www.instagram.com/kuriovascience",
+    "tiktok": "https://www.tiktok.com/@kuriovascience",
+    "facebook": "https://www.facebook.com/kuriovascience",
+    "x": "https://x.com/kuriovascience"
+  }
+}

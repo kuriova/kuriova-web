@@ -1,0 +1,87 @@
+---
+import Mark from './Mark.astro';
+import { getFeaturedUnit } from '../lib/units';
+
+const featured = await getFeaturedUnit();
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a class="brand" href="/" aria-label="Kuriova home">
+      <Mark size={32} />
+      <span class="wordmark">Kuriova</span>
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        <li class="wide"><a class="nav-link" href="/#channels">Channels</a></li>
+        <li class="wide"><a class="nav-link" href="/#partners">Partners</a></li>
+        <li>
+          <a class="btn btn-accent btn-sm" href={featured.links.youtube} style={`--accent: ${featured.accent}`}>
+            Watch<span class="sr-only"> {featured.name} on YouTube</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 72px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--polar);
+    text-decoration: none;
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: var(--track-display);
+    text-transform: uppercase;
+  }
+
+  nav ul {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 14px;
+    color: var(--mist);
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+  }
+
+  .nav-link:hover {
+    color: var(--polar);
+  }
+
+  /* Mobile: the mark plus the button. */
+  @media (max-width: 639px) {
+    .wordmark,
+    .wide {
+      display: none;
+    }
+  }
+</style>

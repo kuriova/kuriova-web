@@ -1,0 +1,99 @@
+---
+import Prose from '../layouts/Prose.astro';
+import { site } from '../site';
+
+const mail = `mailto:${site.email}`;
+---
+
+<Prose
+  title="Privacy policy | Kuriova"
+  heading="Privacy"
+  description="What kuriova.com and Kuriova's tools collect: no cookies, no accounts, cookie-free analytics, and read-only access to our own YouTube channels."
+>
+  <p>
+    <strong>The short version:</strong> kuriova.com sets no cookies, has no accounts and no forms, and does not sell or
+    share personal information. This page explains the little that is collected and why.
+  </p>
+
+  <h2>Who we are</h2>
+  <p>
+    Kuriova makes documentaries and publishes them on channels such as Kuriova Science. In this policy “Kuriova”, “we”
+    and “us” mean Kuriova. Questions go to <a href={mail}>{site.email}</a>.
+  </p>
+
+  <h2>This website</h2>
+  <ul>
+    <li>
+      <strong>Analytics.</strong> We use Cloudflare Web Analytics to count visits and measure page speed. It uses no
+      cookies, no local storage and no fingerprinting, and it reports totals such as page views, referring sites,
+      countries and browser types. See <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare’s privacy policy</a>.
+    </li>
+    <li>
+      <strong>Hosting.</strong> The site is hosted by Vercel, which processes technical request data, such as IP address
+      and browser type, to deliver the pages and protect them from abuse. See <a href="https://vercel.com/legal/privacy-policy">Vercel’s privacy policy</a>.
+    </li>
+    <li>
+      <strong>Video thumbnails.</strong> Thumbnails of our latest videos load from YouTube’s image servers, which receive
+      your IP address as part of the request. See <a href="https://policies.google.com/privacy">Google’s privacy policy</a>.
+    </li>
+  </ul>
+
+  <h2>Email</h2>
+  <p>
+    If you write to <a href={mail}>{site.email}</a>, we use your name, address and message only to reply and to handle
+    what you asked about, such as a sponsorship or licensing request. We keep the conversation for as long as it is
+    useful for that purpose and for our business records, and we delete it on request unless the law requires us to
+    keep it.
+  </p>
+
+  <h2>Our channels on other platforms</h2>
+  <p>
+    When you watch, follow or comment on Kuriova on YouTube, Instagram, TikTok, Facebook or X, that platform’s own
+    privacy policy applies. We see only what those platforms show every channel owner, such as public comments and
+    total audience figures.
+  </p>
+
+  <h2>Kuriova Ops and Google user data</h2>
+  <p>
+    Kuriova Ops is our internal tool for reporting on Kuriova’s own YouTube channels. It is used only by Kuriova, and it
+    connects only to Google accounts that Kuriova owns. It does not access the Google account of any viewer or other
+    person.
+  </p>
+  <ul>
+    <li>
+      <strong>What it accesses.</strong> Through the YouTube Data API, YouTube Analytics API and YouTube Reporting API,
+      with read-only permissions, it reads our own channels’ public video details and their analytics reports, such as
+      views, watch time, audience retention and subscriber counts. Analytics reports are aggregated and do not identify
+      individual viewers.
+    </li>
+    <li>
+      <strong>How it uses the data.</strong> Only to measure how our videos perform and to decide what to make next.
+    </li>
+    <li>
+      <strong>Storage.</strong> Access tokens and report data are stored on Kuriova’s own server, with tokens kept in
+      encrypted form. Report data is kept while it is useful for comparing our videos over time.
+    </li>
+    <li>
+      <strong>Sharing.</strong> We do not sell Google user data, share it with third parties, use it for advertising, or
+      use it to develop, improve or train general-purpose AI or machine-learning models.
+    </li>
+    <li>
+      Kuriova Ops’ use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>,
+      including the Limited Use requirements.
+    </li>
+    <li>
+      Kuriova Ops uses YouTube API Services. By using it you agree to the <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a>, and <a href="https://policies.google.com/privacy">Google’s privacy policy</a> applies. Access can be revoked at any time
+      from the <a href="https://myaccount.google.com/permissions">Google security settings page</a>.
+    </li>
+  </ul>
+
+  <h2>Your rights</h2>
+  <p>
+    You can ask what personal information we hold about you, and ask us to correct or delete it, by writing to <a href={mail}>{site.email}</a>. We reply within one month.
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    If this policy changes, we update this page and the date at the top.
+  </p>
+</Prose>

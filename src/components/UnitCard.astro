@@ -1,0 +1,137 @@
+---
+import Mark from './Mark.astro';
+import LinkList from './LinkList.astro';
+import type { Unit } from '../lib/units';
+
+interface Props {
+  unit: Unit;
+}
+
+const { unit } = Astro.props;
+const live = unit.status === 'live';
+---
+
+<article class:list={['card', { soon: !live }]} style={`--accent: ${unit.accent}`}>
+  <div class="top">
+    <Mark size={56} color="var(--accent)" class="mark" />
+    <p class="label status">
+      <span class="dot" aria-hidden="true"></span>
+      {live ? 'Live' : 'Coming soon'}
+    </p>
+  </div>
+  <h3>
+    {live ? <a href={`/${unit.slug}`}>{unit.name}</a> : unit.name}
+  </h3>
+  <p class="tagline">{unit.tagline}</p>
+  {live && <LinkList unit={unit} />}
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--carbon);
+    transition:
+      transform 150ms ease,
+      border-color 150ms ease;
+  }
+
+  .top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--polar);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  h3 {
+    font-size: 24px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  h3 a {
+    text-decoration: none;
+  }
+
+  /* The name link covers the whole card; the platform links sit above it. */
+  h3 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+  }
+
+  h3 a:focus-visible {
+    outline: none;
+  }
+
+  h3 a:focus-visible::after {
+    outline: 2px solid var(--polar);
+    outline-offset: 3px;
+  }
+
+  .tagline {
+    color: var(--mist);
+    font-size: 17px;
+  }
+
+  .card :global(.links) {
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+    padding-top: 8px;
+  }
+
+  .card:not(.soon):hover {
+    border-color: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card:not(.soon):hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  /* Dimmed: the mark and accent fade, the text keeps its contrast. */
+  .soon {
+    background: transparent;
+    border-style: dashed;
+    border-top-style: solid;
+    border-top-color: var(--line);
+  }
+
+  .soon :global(.mark) {
+    opacity: 0.45;
+  }
+
+  .soon .status {
+    color: var(--mist);
+  }
+
+  .soon .dot {
+    background: transparent;
+    border: 1.5px solid var(--accent);
+  }
+</style>

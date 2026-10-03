@@ -1,0 +1,199 @@
+---
+import Base from '../layouts/Base.astro';
+import UnitCard from '../components/UnitCard.astro';
+import LatestVideos from '../components/LatestVideos.astro';
+import { getFeaturedUnit, getUnits } from '../lib/units';
+import { site } from '../site';
+
+const units = await getUnits();
+const featured = await getFeaturedUnit();
+
+const principles = [
+  {
+    title: 'Primary sources first',
+    body: 'Every claim traces back to papers, agencies and original data.',
+  },
+  {
+    title: 'Checked twice',
+    body: 'A separate fact-check and a final review happen before anything is published.',
+  },
+  {
+    title: 'Made with AI, edited by people',
+    body: 'AI tools and agents research and produce at scale; people decide what ships.',
+  },
+];
+---
+
+<Base title={site.title} description={site.description} accent={featured.accent}>
+  <section class="hero">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <h1>Curiosity, with rigor.</h1>
+      <p class="lede">
+        Kuriova makes documentaries about the strangest, biggest and most surprising things in our universe,
+        researched deeply and made to be understood.
+      </p>
+      <div class="actions">
+        <a class="btn btn-accent" href={featured.links.youtube}>Watch {featured.name}</a>
+        <a class="btn btn-outline" href={`mailto:${site.email}`}>Work with us</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="channels" class="section" aria-labelledby="channels-title" data-reveal>
+    <div class="container">
+      <div class="section-head">
+        <h2 id="channels-title">Channels</h2>
+      </div>
+      <ul class="cards">
+        {
+          units.map((unit) => (
+            <li>
+              <UnitCard unit={unit} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <LatestVideos unit={featured} heading={`New from ${featured.name}`} />
+
+  <section class="section" aria-labelledby="how-title" data-reveal>
+    <div class="container">
+      <div class="section-head">
+        <h2 id="how-title">How we work</h2>
+      </div>
+      <ol class="principles">
+        {
+          principles.map((p, i) => (
+            <li>
+              <p class="label num">{String(i + 1).padStart(2, '0')}</p>
+              <h3>{p.title}</h3>
+              <p class="muted">{p.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section id="partners" class="section" aria-labelledby="partners-title" data-reveal>
+    <div class="container">
+      <div class="partners">
+        <div class="grid-bg" aria-hidden="true"></div>
+        <p class="label">Partners</p>
+        <h2 id="partners-title">Sponsor, license or collaborate with Kuriova.</h2>
+        <a class="email" href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(72px, 12vw, 160px) clamp(24px, 4vw, 48px);
+  }
+
+  .hero .grid-bg {
+    mask-image: radial-gradient(ellipse 85% 90% at 45% 40%, #000 15%, transparent 75%);
+  }
+
+  .hero-inner {
+    position: relative;
+    display: grid;
+    gap: 28px;
+    justify-items: start;
+  }
+
+  .hero h1 {
+    max-width: 14ch;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .cards {
+    display: grid;
+    gap: 20px;
+  }
+
+  @media (min-width: 900px) {
+    .cards {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .principles {
+    display: grid;
+    gap: 40px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 800px) {
+    .principles {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+    }
+  }
+
+  .principles li {
+    display: grid;
+    align-content: start;
+    gap: 12px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+
+  .num {
+    color: var(--accent);
+  }
+
+  .partners {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    justify-items: start;
+    gap: 20px;
+    padding: clamp(32px, 6vw, 72px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  .partners > :not(.grid-bg) {
+    position: relative;
+  }
+
+  .partners .grid-bg {
+    --grid-at: 85% 50%;
+  }
+
+  .partners h2 {
+    max-width: 22ch;
+  }
+
+  .email {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(22px, 4vw, 40px);
+    letter-spacing: 0.02em;
+    color: var(--polar);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 8px;
+    overflow-wrap: anywhere;
+  }
+
+  .email:hover {
+    color: var(--accent);
+  }
+</style>

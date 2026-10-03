@@ -1,0 +1,71 @@
+---
+/**
+ * Brand bible lockup: the mark, KURIOVA, then the subline in the accent.
+ * Proportions follow the banner: wordmark caps are ~36% of the mark's height.
+ */
+import Mark from './Mark.astro';
+
+interface Props {
+  /** Mark height in px. */
+  size: number;
+  /** Smallest mark height on narrow screens; the lockup scales between the two. */
+  minSize?: number;
+  /** "Science", "History"… Omit for the umbrella lockup. */
+  subline?: string;
+  /** Mark colour. The umbrella mark is Polar White. */
+  color?: string;
+  /** Element to render the text in, e.g. "h1" on a unit page. */
+  as?: 'div' | 'h1' | 'p';
+}
+
+const { size, minSize = size, subline, color = 'var(--polar)', as: Tag = 'div' } = Astro.props;
+const cssSize = minSize < size ? `clamp(${minSize}px, ${(size / 9.6).toFixed(2)}vw, ${size}px)` : `${size}px`;
+---
+
+<Tag class="lockup" style={`--size: ${cssSize}`}>
+  <Mark size={size} color={color} />
+  <span class="text">
+    <span class="word">Kuriova</span>
+    {subline && <span class="sub"> {subline}</span>}
+  </span>
+</Tag>
+
+<style>
+  .lockup {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--size) * 0.26);
+    margin: 0;
+  }
+
+  .lockup :global(svg) {
+    flex: none;
+    width: auto;
+    height: var(--size);
+  }
+
+  .text {
+    display: grid;
+    gap: calc(var(--size) * 0.09);
+  }
+
+  .word {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--size) * 0.51);
+    line-height: 1;
+    letter-spacing: var(--track-display);
+    text-transform: uppercase;
+    color: var(--polar);
+  }
+
+  .sub {
+    font-family: var(--font-text);
+    font-weight: 600;
+    font-size: max(13px, calc(var(--size) * 0.2));
+    line-height: 1;
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+</style>

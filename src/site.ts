@@ -1,0 +1,19 @@
+/** Site-wide settings. Per-channel settings live in src/content/units/*.json. */
+export const site = {
+  name: 'Kuriova',
+  url: 'https://kuriova.com',
+  email: 'hello@kuriova.com',
+  title: 'Kuriova: curiosity, with rigor',
+  description:
+    'Documentaries on the strangest, biggest and most surprising things in our universe. Home of Kuriova Science.',
+  slogan: 'Curiosity, with rigor.',
+  /**
+   * Cloudflare Web Analytics site token. It is public (it ships in every page),
+   * so it is safe in the repo. Leave empty to load no analytics at all.
+   */
+  analyticsToken: '',
+  /** Profiles that belong to Kuriova itself rather than a unit, for JSON-LD sameAs. */
+  sameAs: [] as string[],
+  /** Shown on /privacy and /terms. */
+  legalUpdated: '2026-10-03',
+};

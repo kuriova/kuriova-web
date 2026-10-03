@@ -1,0 +1,115 @@
+---
+import Mark from './Mark.astro';
+import { getUnits, platformLinks } from '../lib/units';
+import { site } from '../site';
+
+const units = (await getUnits()).filter((u) => platformLinks(u).length > 0);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="grid" style={`--cols: ${units.length + 1}`}>
+      <a class="brand" href="/" aria-label="Kuriova home">
+        <Mark size={28} />
+        <span class="wordmark">Kuriova</span>
+      </a>
+      {
+        units.map((unit) => (
+          <div class="col">
+            <p class="label">
+              {unit.status === 'live' ? <a href={`/${unit.slug}`}>{unit.name}</a> : unit.name}
+            </p>
+            <ul>
+              {platformLinks(unit).map((link) => (
+                <li>
+                  <a href={link.url}>
+                    {link.label}
+                    <span class="sr-only"> ({unit.name})</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+      <div class="col">
+        <p class="label">Kuriova</p>
+        <ul>
+          <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          <li><a href="/links">All links</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/terms">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="legal">© {year} Kuriova</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--section);
+    padding-block: 56px 40px;
+    border-top: 1px solid var(--line);
+    font-size: 16px;
+  }
+
+  .grid {
+    display: grid;
+    gap: 40px 32px;
+  }
+
+  @media (min-width: 700px) {
+    .grid {
+      grid-template-columns: 1.5fr repeat(var(--cols), 1fr);
+    }
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    align-self: start;
+    gap: 12px;
+    text-decoration: none;
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: var(--track-display);
+    text-transform: uppercase;
+  }
+
+  .label {
+    margin-bottom: 12px;
+  }
+
+  .label a {
+    text-decoration: none;
+  }
+
+  .label a:hover {
+    color: var(--polar);
+  }
+
+  .col li a {
+    display: inline-block;
+    padding-block: 6px;
+    color: var(--mist);
+    text-decoration: none;
+  }
+
+  .col li a:hover {
+    color: var(--polar);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .legal {
+    margin-top: 48px;
+    color: var(--mist);
+    font-size: 14px;
+  }
+</style>

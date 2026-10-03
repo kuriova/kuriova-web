@@ -1,0 +1,60 @@
+---
+import Prose from '../layouts/Prose.astro';
+import { site } from '../site';
+
+const mail = `mailto:${site.email}`;
+---
+
+<Prose
+  title="Terms of use | Kuriova"
+  heading="Terms"
+  description="The terms for using kuriova.com and Kuriova's videos, written in plain English."
+>
+  <p>
+    These terms cover kuriova.com and the videos, images and text Kuriova publishes. By using the site you accept them.
+    Questions go to <a href={mail}>{site.email}</a>.
+  </p>
+
+  <h2>Our content</h2>
+  <ul>
+    <li>Kuriova’s videos, graphics, scripts and the K mark belong to Kuriova or to the people who license them to us.</li>
+    <li>
+      You are welcome to share links to our pages and videos, and to embed our videos using the tools YouTube and other
+      platforms provide.
+    </li>
+    <li>
+      Please don’t download, re-upload, edit or sell our videos or graphics without written permission. To license
+      footage or graphics, email <a href={mail}>{site.email}</a>.
+    </li>
+    <li>The Kuriova name and K mark may not be used in a way that suggests we endorse you or your product.</li>
+  </ul>
+
+  <h2>How we make our videos</h2>
+  <p>
+    AI tools and agents help us research and produce our videos. Every factual claim is checked against primary
+    sources and every video is reviewed by people before it is published. Our videos are made to inform and entertain;
+    they are not professional, medical, legal or financial advice.
+  </p>
+
+  <h2>Corrections</h2>
+  <p>
+    If you find an error, tell us at <a href={mail}>{site.email}</a> with a source if you can. We review every report and
+    correct the description, pinned comment or video when we were wrong.
+  </p>
+
+  <h2>Other platforms and links</h2>
+  <p>
+    Our videos live on YouTube, Instagram, TikTok, Facebook and X, and those platforms’ own terms apply when you use
+    them. Links to other websites are provided for convenience; we are not responsible for their content.
+  </p>
+
+  <h2>No warranty</h2>
+  <p>
+    We work hard to keep the site accurate and available, but it is provided as it is, without warranties of any kind.
+    To the extent the law allows, Kuriova is not liable for losses that arise from using the site or relying on its
+    content. Nothing in these terms limits rights you have under consumer law that cannot be excluded.
+  </p>
+
+  <h2>Changes</h2>
+  <p>If these terms change, we update this page and the date at the top.</p>
+</Prose>

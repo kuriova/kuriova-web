@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import Mark from '../components/Mark.astro';
+---
+
+<Base title="Page not found | Kuriova" description="This page does not exist. Head back to Kuriova." noindex>
+  <section class="lost">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="container inner">
+      <Mark size={96} />
+      <p class="label">Error 404</p>
+      <h1>Nothing here, yet.</h1>
+      <p class="lede">The page you were looking for doesn’t exist or has moved. The documentaries are still where they were.</p>
+      <div class="actions">
+        <a class="btn btn-accent" href="/">Go to the home page</a>
+        <a class="btn btn-outline" href="/links">All channel links</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lost {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(72px, 12vw, 160px) 0;
+  }
+
+  .grid-bg {
+    --grid-at: 20% 30%;
+  }
+
+  .inner {
+    position: relative;
+    display: grid;
+    justify-items: start;
+    gap: 24px;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+  }
+</style>

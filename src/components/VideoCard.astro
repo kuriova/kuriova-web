@@ -1,0 +1,75 @@
+---
+import { formatDate } from '../lib/dates';
+import type { Video } from '../lib/youtube';
+
+interface Props {
+  video: Video;
+}
+
+const { video } = Astro.props;
+---
+
+<a class="video" href={video.url}>
+  <span class="thumb">
+    <img src={video.thumbnail} alt="" width="480" height="360" loading="lazy" decoding="async" />
+  </span>
+  <h3>{video.title}</h3>
+  <time datetime={video.published}>{formatDate(video.published)}</time>
+</a>
+
+<style>
+  .video {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-decoration: none;
+  }
+
+  .thumb {
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--carbon);
+    transition:
+      transform 150ms ease,
+      border-color 150ms ease;
+  }
+
+  /* hqdefault is 4:3 with letterbox bars; cover crops them away. */
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  h3 {
+    font-family: var(--font-text);
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+
+  time {
+    color: var(--mist);
+    font-size: 15px;
+  }
+
+  .video:hover .thumb {
+    border-color: var(--accent);
+  }
+
+  .video:hover h3 {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 4px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .video:hover .thumb {
+      transform: translateY(-2px);
+    }
+  }
+</style>

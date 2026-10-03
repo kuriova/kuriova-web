@@ -1,0 +1,104 @@
+---
+import PlatformIcon from './PlatformIcon.astro';
+import { platformLinks, type Unit } from '../lib/units';
+
+interface Props {
+  unit: Unit;
+  /** icons: a row of round icon buttons. buttons: full-width rows with names. */
+  variant?: 'icons' | 'buttons';
+}
+
+const { unit, variant = 'icons' } = Astro.props;
+const links = platformLinks(unit);
+---
+
+{
+  links.length > 0 && (
+    <ul class:list={['links', variant]}>
+      {links.map((link) => (
+        <li>
+          <a href={link.url} rel="me noopener">
+            <PlatformIcon platform={link.key} size={variant === 'icons' ? 20 : 22} />
+            {variant === 'icons' ? (
+              <span class="sr-only">
+                {unit.name} on {link.label}
+              </span>
+            ) : (
+              <span>
+                {link.label}
+                <span class="sr-only"> ({unit.name})</span>
+              </span>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .icons a {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--mist);
+    transition:
+      color 150ms ease,
+      border-color 150ms ease;
+  }
+
+  .icons a:hover {
+    color: var(--polar);
+    border-color: var(--accent);
+  }
+
+  .buttons {
+    display: grid;
+    gap: 12px;
+  }
+
+  .buttons a {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 60px;
+    padding: 12px 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--carbon);
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      border-color 150ms ease,
+      transform 150ms ease;
+  }
+
+  .buttons a::after {
+    content: '→';
+    margin-left: auto;
+    color: var(--mist);
+  }
+
+  .buttons a:hover {
+    border-color: var(--accent);
+  }
+
+  .buttons svg {
+    color: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .buttons a:hover {
+      transform: translateY(-2px);
+    }
+  }
+</style>

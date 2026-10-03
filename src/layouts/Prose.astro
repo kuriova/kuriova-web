@@ -1,0 +1,73 @@
+---
+import Base from './Base.astro';
+import { site } from '../site';
+import { formatDate } from '../lib/dates';
+
+interface Props {
+  title: string;
+  heading: string;
+  description: string;
+}
+
+const { title, heading, description } = Astro.props;
+---
+
+<Base title={title} description={description}>
+  <article class="container prose">
+    <h1>{heading}</h1>
+    <p class="label">Last updated <time datetime={site.legalUpdated}>{formatDate(site.legalUpdated)}</time></p>
+    <slot />
+  </article>
+</Base>
+
+<style>
+  .prose {
+    max-width: calc(720px + 2 * var(--gutter));
+    padding-block: clamp(56px, 8vw, 96px) 0;
+  }
+
+  .prose h1 {
+    font-size: clamp(32px, 5vw, 56px);
+    margin-bottom: 16px;
+  }
+
+  .prose :global(h2) {
+    margin: 48px 0 16px;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+  }
+
+  .prose :global(p),
+  .prose :global(ul) {
+    margin-top: 16px;
+  }
+
+  .prose :global(.label) {
+    margin-top: 0;
+    color: var(--mist);
+  }
+
+  .prose :global(ul) {
+    padding-left: 1.2em;
+    list-style: disc;
+  }
+
+  .prose :global(li + li) {
+    margin-top: 8px;
+  }
+
+  .prose :global(li::marker) {
+    color: var(--mist);
+  }
+
+  .prose :global(a) {
+    color: var(--polar);
+    text-decoration-color: var(--accent);
+    text-underline-offset: 3px;
+  }
+
+  .prose :global(strong) {
+    color: var(--polar);
+    font-weight: 600;
+  }
+</style>

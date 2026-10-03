@@ -1,0 +1,119 @@
+---
+import Base from '../layouts/Base.astro';
+import Lockup from '../components/Lockup.astro';
+import Mark from '../components/Mark.astro';
+import LinkList from '../components/LinkList.astro';
+import { getUnits, platformLinks } from '../lib/units';
+import { site } from '../site';
+
+const units = await getUnits();
+const live = units.filter((u) => platformLinks(u).length > 0);
+const soon = units.filter((u) => u.status === 'soon' && platformLinks(u).length === 0);
+---
+
+<Base
+  title="Kuriova: every channel link"
+  description="Every Kuriova channel on YouTube, Instagram, TikTok, Facebook and X, in one place."
+  header={false}
+>
+  <div class="container page">
+    <a class="home" href="/" aria-label="Kuriova home">
+      <Lockup size={48} />
+    </a>
+    <h1 class="sr-only">Kuriova links</h1>
+    <p class="intro muted">{site.slogan} Documentaries on the strangest, biggest and most surprising things in our universe.</p>
+
+    {
+      live.map((unit) => (
+        <section class="unit" aria-labelledby={`links-${unit.slug}`} style={`--accent: ${unit.accent}`}>
+          <h2 id={`links-${unit.slug}`} class="unit-head">
+            <Mark size={28} color="var(--accent)" />
+            {unit.name}
+          </h2>
+          <LinkList unit={unit} variant="buttons" />
+        </section>
+      ))
+    }
+
+    <section class="unit" aria-labelledby="links-kuriova">
+      <h2 id="links-kuriova" class="unit-head">
+        <Mark size={28} />
+        Kuriova
+      </h2>
+      <ul class="plain">
+        <li><a href="/">kuriova.com</a></li>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+      </ul>
+    </section>
+
+    {
+      soon.length > 0 && (
+        <p class="soon label">
+          Coming soon: {soon.map((u) => u.name).join(' · ')}
+        </p>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .page {
+    display: grid;
+    gap: 40px;
+    max-width: calc(560px + 2 * var(--gutter));
+    padding-block: 48px 0;
+  }
+
+  .home {
+    justify-self: start;
+    text-decoration: none;
+  }
+
+  .intro {
+    margin-top: -16px;
+    font-size: 17px;
+  }
+
+  .unit {
+    display: grid;
+    gap: 16px;
+  }
+
+  .unit-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    letter-spacing: 0.08em;
+  }
+
+  .plain {
+    display: grid;
+    gap: 12px;
+  }
+
+  .plain a {
+    display: flex;
+    align-items: center;
+    min-height: 60px;
+    padding: 12px 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .plain a::after {
+    content: '→';
+    margin-left: auto;
+    color: var(--mist);
+  }
+
+  .plain a:hover {
+    border-color: var(--polar);
+  }
+
+  .soon {
+    line-height: 1.8;
+  }
+</style>
