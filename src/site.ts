@@ -13,7 +13,12 @@ export const site = {
    */
   analyticsToken: '5bdcc4c5752743369e1f269a0f0c94c6',
   /** Profiles that belong to Kuriova itself rather than a unit, for JSON-LD sameAs. */
-  sameAs: [] as string[],
+  sameAs: [
+    'https://www.youtube.com/@kuriova',
+    'https://www.instagram.com/kuriovahq',
+    'https://www.facebook.com/kuriovahq',
+    'https://x.com/kuriova',
+  ],
   /** Shown on /privacy and /terms. */
   legalUpdated: '2026-10-03',
 };
