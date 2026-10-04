@@ -1,0 +1,31 @@
+---
+// Where the contact form lands when it is posted without JavaScript and sending fails.
+import Base from '../../layouts/Base.astro';
+import { site } from '../../site';
+---
+
+<Base title="Message not sent | Kuriova" description="Your message could not be sent." noindex>
+  <section class="container done">
+    <p class="label">Message not sent</p>
+    <h1>That didn’t go through.</h1>
+    <p class="lede">
+      Please check that every field is filled in and try again, or email us at <a href={`mailto:${site.email}`}>{site.email}</a>.
+    </p>
+    <a class="btn btn-outline" href="/contact">Back to the form</a>
+  </section>
+</Base>
+
+<style>
+  .done {
+    display: grid;
+    justify-items: start;
+    gap: 24px;
+    padding-block: clamp(72px, 12vw, 160px) 0;
+  }
+
+  .lede a {
+    color: var(--polar);
+    text-decoration-color: var(--accent);
+    text-underline-offset: 3px;
+  }
+</style>

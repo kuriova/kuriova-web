@@ -1,0 +1,270 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../site';
+
+// Values must match TOPICS in api/contact.ts.
+const topics = [
+  ['sponsorship', 'Sponsorship'],
+  ['licensing', 'Licensing footage or graphics'],
+  ['collaboration', 'Collaboration'],
+  ['press', 'Press'],
+  ['feedback', 'Feedback or a correction'],
+  ['other', 'Something else'],
+];
+---
+
+<Base
+  title="Contact Kuriova"
+  description="Sponsor, license or collaborate with Kuriova, or send us feedback. Tell us a little and we'll reply by email."
+>
+  <section class="contact">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="container layout">
+      <div class="intro">
+        <p class="label">Contact</p>
+        <h1>Get in touch.</h1>
+        <p class="lede">
+          Sponsorships, licensing, collaborations, press, or a correction to one of our videos. Tell us a little and
+          we’ll reply by email.
+        </p>
+        <p class="muted alt">Prefer email? Write to <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+      </div>
+
+      <div class="panel">
+        <form id="contact-form" class="form" method="post" action="/api/contact">
+          <div class="field">
+            <label for="cf-name">Name</label>
+            <input id="cf-name" name="name" type="text" autocomplete="name" required maxlength="100" aria-describedby="cf-name-error" />
+            <p class="error" id="cf-name-error" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="cf-email">Email</label>
+            <input id="cf-email" name="email" type="email" autocomplete="email" required maxlength="200" aria-describedby="cf-email-error" />
+            <p class="error" id="cf-email-error" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="cf-organisation">Organisation <span class="optional">(optional)</span></label>
+            <input id="cf-organisation" name="organisation" type="text" autocomplete="organization" maxlength="120" aria-describedby="cf-organisation-error" />
+            <p class="error" id="cf-organisation-error" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="cf-topic">Topic</label>
+            <select id="cf-topic" name="topic" required aria-describedby="cf-topic-error">
+              <option value="" disabled selected>Choose a topic</option>
+              {topics.map(([value, label]) => <option value={value}>{label}</option>)}
+            </select>
+            <p class="error" id="cf-topic-error" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="cf-message">Message</label>
+            <textarea id="cf-message" name="message" rows="7" required minlength="10" maxlength="5000" aria-describedby="cf-message-error"></textarea>
+            <p class="error" id="cf-message-error" hidden></p>
+          </div>
+
+          <!-- Spam traps: people never see or fill these. -->
+          <div class="trap" aria-hidden="true">
+            <label>Leave this empty <input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
+          </div>
+          <input type="hidden" name="t" value="" />
+
+          <div class="actions">
+            <button class="btn btn-accent" type="submit">Send message</button>
+            <p class="note">We use these details only to reply to you. See our <a href="/privacy#contact-form">privacy policy</a>.</p>
+          </div>
+          <p class="status" id="contact-status" role="status" aria-live="polite"></p>
+        </form>
+
+        <div class="sent" id="contact-sent" hidden tabindex="-1">
+          <p class="label">Message sent</p>
+          <h2>Thanks, we’ve got it.</h2>
+          <p class="muted">We read every message and reply from {site.email}.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../scripts/contact';
+</script>
+
+<style>
+  .contact {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(56px, 9vw, 120px) 0;
+  }
+
+  .grid-bg {
+    --grid-at: 15% 25%;
+  }
+
+  .layout {
+    position: relative;
+    display: grid;
+    gap: 40px;
+  }
+
+  @media (min-width: 900px) {
+    .layout {
+      grid-template-columns: 5fr 7fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .intro {
+      position: sticky;
+      top: 40px;
+    }
+  }
+
+  .intro {
+    display: grid;
+    gap: 20px;
+    justify-items: start;
+  }
+
+  .alt a {
+    color: var(--polar);
+    text-decoration-color: var(--accent);
+    text-underline-offset: 3px;
+  }
+
+  .panel {
+    padding: clamp(24px, 4vw, 40px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--carbon);
+  }
+
+  .form {
+    display: grid;
+    gap: 20px;
+  }
+
+  .field {
+    display: grid;
+    gap: 8px;
+  }
+
+  label {
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .optional {
+    color: var(--mist);
+    font-weight: 500;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--obsidian);
+    color: var(--polar);
+    font: inherit;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 168px;
+  }
+
+  select {
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--mist) 50%),
+      linear-gradient(135deg, var(--mist) 50%, transparent 50%);
+    background-position:
+      calc(100% - 20px) 50%,
+      calc(100% - 14px) 50%;
+    background-size: 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 40px;
+  }
+
+  input:hover,
+  select:hover,
+  textarea:hover {
+    border-color: var(--mist);
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: transparent;
+  }
+
+  [aria-invalid='true'] {
+    border-color: var(--danger);
+  }
+
+  .error {
+    color: var(--danger);
+    font-size: 15px;
+  }
+
+  .trap {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .actions {
+    display: grid;
+    gap: 14px;
+    justify-items: start;
+    margin-top: 4px;
+  }
+
+  .actions button[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  .note {
+    color: var(--mist);
+    font-size: 15px;
+  }
+
+  .note a {
+    color: var(--polar);
+    text-underline-offset: 3px;
+  }
+
+  .status:empty {
+    display: none;
+  }
+
+  .status {
+    font-size: 16px;
+  }
+
+  .status.is-error {
+    color: var(--danger);
+  }
+
+  .sent {
+    display: grid;
+    gap: 14px;
+    outline: none;
+  }
+
+  .sent h2 {
+    font-size: clamp(24px, 3vw, 32px);
+  }
+</style>

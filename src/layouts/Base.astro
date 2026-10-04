@@ -43,6 +43,12 @@ const organization = {
   logo: `${site.url}/brand/icon-512.png`,
   email: site.email,
   slogan: site.slogan,
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'partnerships',
+    email: site.email,
+    url: `${site.url}/contact`,
+  },
   sameAs: profileUrls(await getUnits()),
 };
 // Escape "<" so no string in the data can close the script element.

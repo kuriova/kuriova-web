@@ -1,0 +1,23 @@
+---
+// Where the contact form lands when it is posted without JavaScript.
+import Base from '../../layouts/Base.astro';
+import { site } from '../../site';
+---
+
+<Base title="Message sent | Kuriova" description="Your message reached Kuriova." noindex>
+  <section class="container done">
+    <p class="label">Message sent</p>
+    <h1>Thanks, we’ve got it.</h1>
+    <p class="lede">We read every message and reply from {site.email}.</p>
+    <a class="btn btn-outline" href="/">Back to the home page</a>
+  </section>
+</Base>
+
+<style>
+  .done {
+    display: grid;
+    justify-items: start;
+    gap: 24px;
+    padding-block: clamp(72px, 12vw, 160px) 0;
+  }
+</style>

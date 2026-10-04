@@ -20,5 +20,5 @@ export const site = {
     'https://x.com/kuriova',
   ],
   /** Shown on /privacy and /terms. */
-  legalUpdated: '2026-10-03',
+  legalUpdated: '2026-10-04',
 };

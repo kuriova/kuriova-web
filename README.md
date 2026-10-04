@@ -57,6 +57,25 @@ curl -fsS -X POST "$WEB_DEPLOY_HOOK"
 GitHub pauses scheduled workflows in public repos after 60 days with no commits; re-enable it from the Actions tab.
 Keep the hook URL out of the repo: anyone who has it can trigger rebuilds.
 
+## Contact form
+
+`/contact` posts to `api/contact.ts`, a Vercel Function that checks the form and emails it to the company inbox
+through Cloudflare Email Service, with Reply-To set to the sender. Nothing is stored. Sends to a verified Email
+Routing destination are free on every Cloudflare plan. Spam traps: a hidden field, a minimum fill time and a
+per-instance rate limit.
+
+It needs these environment variables in Vercel (Production and Preview):
+
+| Variable | Value |
+|---|---|
+| `CLOUDFLARE_ACCOUNT_ID` | The Cloudflare account that runs Email Routing for kuriova.com |
+| `CLOUDFLARE_EMAIL_TOKEN` | A Cloudflare API token with only **Email Sending: Edit** on that account (Sensitive) |
+| `CONTACT_TO` | A verified Email Routing destination address: the company inbox |
+| `CONTACT_FROM` | Optional; an address on kuriova.com. Defaults to `forms@kuriova.com` |
+
+`astro dev` doesn't run the function; test it on a preview deployment. The topic values in
+`src/pages/contact.astro` must match `TOPICS` in the function.
+
 ## Brand
 
 - Tokens live in `src/styles/tokens.css`. The Brand bible tab of the Build Blueprint decides any style question.

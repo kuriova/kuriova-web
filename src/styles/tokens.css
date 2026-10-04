@@ -5,6 +5,7 @@
   --polar: #f8fafc; /* text */
   --mist: #94a3b8; /* secondary text, dividers */
   --accent: #00e5ff; /* set per unit; Science = cyan */
+  --danger: #fca5a5; /* form errors only; ~10:1 on Obsidian */
 
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-text: 'Inter', system-ui, sans-serif;
@@ -56,6 +57,11 @@ body {
 
 main {
   flex: 1;
+}
+
+/* Components set display: grid/flex; keep the hidden attribute stronger than that. */
+[hidden] {
+  display: none !important;
 }
 
 h1,
