@@ -25,3 +25,5 @@ pnpm-debug.log*
 
 # Brand pack source (web files are copied into public/brand/)
 kuriova-brand-pack-*/
+.vercel
+.env*
