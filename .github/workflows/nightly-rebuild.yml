@@ -1,0 +1,29 @@
+# Rebuilds kuriova.com every night so "latest videos" picks up new uploads.
+# The site reads YouTube only at build time, and publishing a video doesn't push code.
+# Needs the repository secret WEB_DEPLOY_HOOK: the Vercel Deploy Hook URL
+# (Vercel → kuriova-web → Settings → Git → Deploy Hooks, "kuriova-hq" on main).
+# Once the server's nightly cron calls the same hook, this workflow can be deleted.
+name: Nightly rebuild
+
+on:
+  schedule:
+    - cron: '17 3 * * *' # 03:17 UTC = 06:17 in Nairobi
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Call the Vercel deploy hook
+        env:
+          WEB_DEPLOY_HOOK: ${{ secrets.WEB_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$WEB_DEPLOY_HOOK" ]; then
+            echo "::error::The WEB_DEPLOY_HOOK repository secret is missing."
+            exit 1
+          fi
+          curl -fsS --retry 3 --retry-delay 10 -X POST "$WEB_DEPLOY_HOOK" > /dev/null
+          echo "Rebuild requested."

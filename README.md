@@ -42,11 +42,20 @@ With no uploads yet, the row shows "First documentary coming soon".
 
 On Vercel, a feed error fails the build on purpose, so the last good deployment stays live. Locally it only warns.
 
-The site rebuilds through a Vercel Deploy Hook: the server calls it nightly and, from Phase 1, after each publish.
+Publishing a video doesn't change the repo, so the site rebuilds through a Vercel Deploy Hook (`kuriova-hq` on
+`main`). Calling its URL makes Vercel rebuild and redeploy:
 
 ```sh
 curl -fsS -X POST "$WEB_DEPLOY_HOOK"
 ```
+
+- **Now:** `.github/workflows/nightly-rebuild.yml` calls it every night at 03:17 UTC (06:17 Nairobi), using the
+  repository secret `WEB_DEPLOY_HOOK`. Run it by hand from the Actions tab after publishing.
+- **Later:** the server's nightly cron and, from Phase 1, the Dispatcher call the same URL, stored in
+  `/srv/kuriova/secrets/web.env`. Then delete the workflow.
+
+GitHub pauses scheduled workflows in public repos after 60 days with no commits; re-enable it from the Actions tab.
+Keep the hook URL out of the repo: anyone who has it can trigger rebuilds.
 
 ## Brand
 
