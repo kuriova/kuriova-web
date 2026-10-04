@@ -60,11 +60,12 @@ Keep the hook URL out of the repo: anyone who has it can trigger rebuilds.
 ## Brand
 
 - Tokens live in `src/styles/tokens.css`. The Brand bible tab of the Build Blueprint decides any style question.
-- `src/components/Mark.astro` inlines the brand pack v1.1 master paths; the masters themselves are in
+- `src/components/Mark.astro` inlines the brand pack v1.1.1 master paths; the masters themselves are in
   `public/brand/mark/`. Favicons and app icons in `public/brand/` and `public/favicon.ico` come from the pack's
   `web/` folder. The two `og-*.png` social images are rendered from the master mark.
-- `/brand/*` is served with a one-year `immutable` cache, so a changed brand file needs a **new filename**.
-  Overwriting a file keeps returning visitors on the old one.
+- `/brand/*` is served with a one-year `immutable` cache, so a changed brand file needs a **new URL**: a new
+  filename, or a `?v=` query on the link (as `favicon-32.png?v=1.1.1` in `Base.astro`). Overwriting a file alone
+  keeps returning visitors on the old one.
 
 ## Settings
 
