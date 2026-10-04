@@ -11,7 +11,7 @@ export const site = {
    * Cloudflare Web Analytics site token. It is public (it ships in every page),
    * so it is safe in the repo. Leave empty to load no analytics at all.
    */
-  analyticsToken: '',
+  analyticsToken: '5bdcc4c5752743369e1f269a0f0c94c6',
   /** Profiles that belong to Kuriova itself rather than a unit, for JSON-LD sameAs. */
   sameAs: [] as string[],
   /** Shown on /privacy and /terms. */
