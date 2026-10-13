@@ -4,7 +4,8 @@ import Base from '../layouts/Base.astro';
 import Lockup from '../components/Lockup.astro';
 import LinkList from '../components/LinkList.astro';
 import LatestVideos from '../components/LatestVideos.astro';
-import { getLiveUnits, subline, unitTitle, type Unit } from '../lib/units';
+import Ruler from '../components/Ruler.astro';
+import { getLiveUnits, subline, unitCode, unitTitle, type Unit } from '../lib/units';
 
 export async function getStaticPaths() {
   const units = await getLiveUnits();
@@ -25,8 +26,15 @@ const youtube = unit.links.youtube;
   <section class="hero">
     <div class="grid-bg" aria-hidden="true"></div>
     <div class="container hero-inner">
+      <p class="mono code">Catalogue {unitCode(unit)}</p>
       <Lockup as="h1" size={112} minSize={64} subline={subline(unit)} color="var(--accent)" />
       <p class="lede">{unit.tagline}</p>
+      <dl class="spec reg" aria-label="Channel record">
+        <div><dt class="mono">catalogue</dt><dd>{unitCode(unit)}</dd></div>
+        <div><dt class="mono">status</dt><dd>Live</dd></div>
+        <div><dt class="mono">pillars</dt><dd>{unit.pillars.length}</dd></div>
+        {youtube && <div class="wide"><dt class="mono">channel</dt><dd>@{new URL(youtube).pathname.replace(/^\/@?/, '')}</dd></div>}
+      </dl>
       {
         youtube && (
           <div class="actions">
@@ -44,19 +52,13 @@ const youtube = unit.links.youtube;
 
   {
     unit.pillars.length > 0 && (
-      <section class="section" aria-labelledby="pillars-title" data-reveal>
+      <section class="section" aria-labelledby="pillars-title">
         <div class="container">
           <div class="section-head">
             <h2 id="pillars-title">What we cover</h2>
+            <p class="mono">{unit.pillars.join(' / ')}</p>
           </div>
-          <ul class="pillars">
-            {unit.pillars.map((pillar, i) => (
-              <li>
-                <span class="label num">{String(i + 1).padStart(2, '0')}</span>
-                <span class="pillar">{pillar}</span>
-              </li>
-            ))}
-          </ul>
+          <Ruler pillars={unit.pillars} caption={`${unit.name} pillars: ${unit.pillars.join(', ')}, across every scale from atoms to the observable universe.`} />
         </div>
       </section>
     )
@@ -64,7 +66,7 @@ const youtube = unit.links.youtube;
 
   <LatestVideos unit={unit} heading="Latest videos" limit={6} />
 
-  <section class="section" aria-labelledby="follow-title" data-reveal>
+  <section class="section" aria-labelledby="follow-title">
     <div class="container follow">
       <div class="section-head">
         <h2 id="follow-title">Follow {unit.name}</h2>
@@ -94,35 +96,52 @@ const youtube = unit.links.youtube;
     gap: 12px;
   }
 
-  .pillars {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-  }
-
-  .pillars li {
-    display: grid;
-    gap: 24px;
-    padding: 24px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--carbon);
-  }
-
-  .num {
-    color: var(--accent);
-  }
-
-  .pillar {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 1.15;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
 
   .follow :global(.buttons) {
     max-width: 720px;
+  }
+
+  .spec {
+    margin: 8px 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(100%, 420px);
+    border: 1px solid var(--line);
+    background: rgb(15 23 42 / 0.6);
+  }
+
+  .spec div {
+    display: grid;
+    gap: 4px;
+    padding: 14px 16px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .spec .wide {
+    grid-column: 1 / -1;
+  }
+
+  .spec dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 0.04em;
+    overflow-wrap: anywhere;
+  }
+
+  @media (min-width: 980px) {
+    .hero-inner {
+      grid-template-columns: 1.4fr 1fr;
+      align-items: end;
+    }
+
+    .spec {
+      grid-column: 2;
+      grid-row: 1 / span 4;
+      align-self: center;
+      justify-self: end;
+    }
   }
 </style>

@@ -1,23 +1,28 @@
 ---
 import Base from '../layouts/Base.astro';
-import UnitCard from '../components/UnitCard.astro';
+import Ruler from '../components/Ruler.astro';
+import CatalogueEntry from '../components/CatalogueEntry.astro';
 import LatestVideos from '../components/LatestVideos.astro';
 import { getFeaturedUnit, getUnits } from '../lib/units';
 import { site } from '../site';
 
 const units = await getUnits();
 const featured = await getFeaturedUnit();
+const liveCount = units.filter((u) => u.status === 'live').length;
 
-const principles = [
+const method = [
   {
+    key: 'sources',
     title: 'Primary sources first',
     body: 'Every claim traces back to papers, agencies and original data.',
   },
   {
+    key: 'checks',
     title: 'Checked twice',
     body: 'A separate fact-check and a final review happen before anything is published.',
   },
   {
+    key: 'judgment',
     title: 'Modern tools, human judgment',
     body: 'We work with modern research and production tools; people decide what ships.',
   },
@@ -29,27 +34,37 @@ const principles = [
     <div class="grid-bg" aria-hidden="true"></div>
     <div class="container hero-inner">
       <h1>Curiosity, with rigor.</h1>
-      <p class="lede">
-        Kuriova makes documentaries about the strangest, biggest and most surprising things in our universe,
-        researched deeply and made to be understood.
-      </p>
-      <div class="actions">
-        <a class="btn btn-accent" href={featured.links.youtube}>Watch {featured.name}</a>
-        <a class="btn btn-outline" href="/contact?topic=sponsorship">Work with us</a>
+      <div class="hero-copy">
+        <p class="lede">
+          Kuriova makes documentaries about the strangest, biggest and most surprising things in our universe,
+          researched deeply and made to be understood.
+        </p>
+        <div class="actions">
+          <a class="btn btn-accent" href={featured.links.youtube}>Watch {featured.name}</a>
+          <a class="btn btn-outline" href="/contact?topic=sponsorship">Work with us</a>
+        </div>
       </div>
+    </div>
+    <div class="container ruler-wrap">
+      <Ruler
+        pillars={featured.pillars}
+        caption={`${featured.name} covers four pillars across every scale, from atoms to the observable universe.`}
+      />
+      <p class="mono ruler-note">Sizes in metres on a log scale. The bands show where each {featured.name} pillar sits.</p>
     </div>
   </section>
 
-  <section id="channels" class="section" aria-labelledby="channels-title" data-reveal>
+  <section id="channels" class="section" aria-labelledby="channels-title">
     <div class="container">
       <div class="section-head">
-        <h2 id="channels-title">Channels</h2>
+        <h2 id="channels-title">The catalogue</h2>
+        <p class="mono">{liveCount} of {units.length} channels live</p>
       </div>
-      <ul class="cards">
+      <ul class="entries">
         {
           units.map((unit) => (
             <li>
-              <UnitCard unit={unit} />
+              <CatalogueEntry unit={unit} />
             </li>
           ))
         }
@@ -59,31 +74,34 @@ const principles = [
 
   <LatestVideos unit={featured} heading={`New from ${featured.name}`} />
 
-  <section class="section" aria-labelledby="how-title" data-reveal>
-    <div class="container">
-      <div class="section-head">
-        <h2 id="how-title">How we work</h2>
+  <section class="section" aria-labelledby="method-title">
+    <div class="container method">
+      <div class="method-head">
+        <h2 id="method-title">How we work</h2>
+        <p class="lede">Each film is researched like a paper and checked like one before it reaches you.</p>
       </div>
-      <ol class="principles">
+      <dl class="method-list">
         {
-          principles.map((p, i) => (
-            <li>
-              <p class="label num">{String(i + 1).padStart(2, '0')}</p>
-              <h3>{p.title}</h3>
-              <p class="muted">{p.body}</p>
-            </li>
+          method.map((m) => (
+            <div class="method-item">
+              <dt class="mono">{m.key}</dt>
+              <dd>
+                <h3>{m.title}</h3>
+                <p class="muted">{m.body}</p>
+              </dd>
+            </div>
           ))
         }
-      </ol>
+      </dl>
     </div>
   </section>
 
-  <section id="partners" class="section" aria-labelledby="partners-title" data-reveal>
+  <section id="partners" class="section" aria-labelledby="partners-title">
     <div class="container">
-      <div class="partners">
+      <div class="partners reg">
         <div class="grid-bg" aria-hidden="true"></div>
-        <p class="label">Partners</p>
         <h2 id="partners-title">Sponsor, license or collaborate with Kuriova.</h2>
+        <p class="lede">Brand partnerships, footage and graphics licensing, co-productions and press.</p>
         <div class="partner-actions">
           <a class="btn btn-accent" href="/contact?topic=sponsorship">Send us a message</a>
           <p class="muted">or email <a class="email" href={`mailto:${site.email}`}>{site.email}</a></p>
@@ -97,78 +115,121 @@ const principles = [
   .hero {
     position: relative;
     overflow: hidden;
-    padding-block: clamp(72px, 12vw, 160px) clamp(24px, 4vw, 48px);
+    padding-block: clamp(56px, 10vw, 136px) 0;
   }
 
   .hero .grid-bg {
-    mask-image: radial-gradient(ellipse 85% 90% at 45% 40%, #000 15%, transparent 75%);
+    mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, #000 15%, transparent 75%);
   }
 
   .hero-inner {
     position: relative;
     display: grid;
+    gap: 32px;
+  }
+
+  .hero h1 {
+    font-size: var(--step-5);
+    line-height: 0.95;
+    letter-spacing: 0.04em;
+    max-width: 11ch;
+  }
+
+  .hero-copy {
+    display: grid;
     gap: 28px;
     justify-items: start;
   }
 
-  .hero h1 {
-    max-width: 14ch;
+  @media (min-width: 980px) {
+    .hero-inner {
+      grid-template-columns: 1.35fr 1fr;
+      align-items: end;
+    }
   }
 
   .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 12px;
+    gap: 14px;
   }
 
-  .cards {
+  .ruler-wrap {
+    position: relative;
     display: grid;
-    gap: 20px;
+    gap: 18px;
+    padding-top: clamp(56px, 8vw, 96px);
+  }
+
+  .ruler-note {
+    max-width: 60ch;
+  }
+
+  .entries {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .method {
+    display: grid;
+    gap: 48px;
   }
 
   @media (min-width: 900px) {
-    .cards {
-      grid-template-columns: repeat(3, 1fr);
+    .method {
+      grid-template-columns: 1fr 1.3fr;
+      gap: 80px;
     }
   }
 
-  .principles {
+  .method-head {
     display: grid;
-    gap: 40px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  @media (min-width: 800px) {
-    .principles {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 48px;
-    }
-  }
-
-  .principles li {
-    display: grid;
+    gap: 20px;
     align-content: start;
-    gap: 12px;
-    padding-top: 24px;
+  }
+
+  .method-list {
+    margin: 0;
+    display: grid;
+  }
+
+  .method-item {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 16px;
+    padding: 28px 0;
     border-top: 1px solid var(--line);
   }
 
-  .num {
+  .method-item:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+
+  @media (max-width: 599px) {
+    .method-item {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+
+  .method-item dt {
     color: var(--accent);
+    padding-top: 6px;
+  }
+
+  .method-item dd {
+    margin: 0;
+    display: grid;
+    gap: 8px;
   }
 
   .partners {
     position: relative;
-    overflow: hidden;
     display: grid;
     justify-items: start;
-    gap: 20px;
-    padding: clamp(32px, 6vw, 72px);
+    gap: 22px;
+    padding: clamp(32px, 7vw, 88px);
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    background: linear-gradient(160deg, var(--carbon), transparent 70%);
   }
 
   .partners > :not(.grid-bg) {
@@ -180,28 +241,23 @@ const principles = [
   }
 
   .partners h2 {
-    max-width: 22ch;
+    max-width: 18ch;
+    font-size: var(--step-4);
   }
 
   .partner-actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px 20px;
+    gap: 14px 22px;
     margin-top: 8px;
   }
 
   .email {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: clamp(18px, 2.4vw, 24px);
-    letter-spacing: 0.02em;
     color: var(--polar);
-    text-decoration: underline;
+    font-weight: 600;
     text-decoration-color: var(--accent);
-    text-decoration-thickness: 2px;
     text-underline-offset: 5px;
-    overflow-wrap: anywhere;
   }
 
   .email:hover {

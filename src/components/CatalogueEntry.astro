@@ -1,0 +1,184 @@
+---
+import Mark from './Mark.astro';
+import LinkList from './LinkList.astro';
+import { unitCode, type Unit } from '../lib/units';
+
+interface Props {
+  unit: Unit;
+}
+
+const { unit } = Astro.props;
+const live = unit.status === 'live';
+const code = unitCode(unit);
+---
+
+<article class:list={['entry', { soon: !live }]} style={`--accent: ${unit.accent}`}>
+  <div class="id">
+    <Mark size={40} color="var(--accent)" class="mark" />
+    <span class="code">{code}</span>
+  </div>
+
+  <div class="body">
+    <h3>
+      {live ? <a href={`/${unit.slug}`}>{unit.name}</a> : unit.name}
+    </h3>
+    <p class="tagline">{unit.tagline}</p>
+    {unit.pillars.length > 0 && <p class="mono pillars">{unit.pillars.join(' / ')}</p>}
+  </div>
+
+  <div class="meta">
+    {
+      live ? (
+        <p class="mono state">
+          <span class="dot" aria-hidden="true" />
+          Live now
+        </p>
+      ) : (
+        <p class="stamp">Reserved</p>
+      )
+    }
+    {live && <LinkList unit={unit} />}
+  </div>
+</article>
+
+<style>
+  .entry {
+    position: relative;
+    display: grid;
+    gap: 20px 32px;
+    padding: 32px 20px;
+    border-top: 1px solid var(--line);
+    transition: background-color 200ms ease;
+  }
+
+  @media (min-width: 820px) {
+    .entry {
+      grid-template-columns: 120px 1fr auto;
+      align-items: start;
+      padding: 40px 24px;
+    }
+  }
+
+  .entry:not(.soon):hover {
+    background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%);
+  }
+
+  .id {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  @media (min-width: 820px) {
+    .id {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  .code {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    line-height: 1;
+    color: var(--accent);
+  }
+
+  .body {
+    display: grid;
+    gap: 10px;
+    max-width: 60ch;
+  }
+
+  h3 {
+    font-size: var(--step-2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h3 a {
+    text-decoration: none;
+  }
+
+  /* The name covers the row; the platform links sit above it. */
+  h3 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  h3 a:focus-visible {
+    outline: none;
+  }
+
+  h3 a:focus-visible::after {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+
+  .tagline {
+    color: var(--mist);
+  }
+
+  .pillars {
+    color: var(--polar);
+  }
+
+  .meta {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 16px;
+    justify-items: start;
+  }
+
+  @media (min-width: 820px) {
+    .meta {
+      justify-items: end;
+    }
+  }
+
+  .state {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--polar);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
+    animation: pulse 2.4s ease-out 3;
+  }
+
+  .stamp {
+    padding: 4px 10px;
+    border: 1.5px solid var(--mist);
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--mist);
+    transform: rotate(-4deg);
+  }
+
+  /* Reserved: the mark fades; text keeps its contrast. */
+  .soon :global(.mark) {
+    opacity: 0.5;
+  }
+
+  .soon .code {
+    color: var(--mist);
+  }
+
+  .soon h3 {
+    color: var(--mist);
+  }
+
+  @keyframes pulse {
+    to {
+      box-shadow: 0 0 0 10px transparent;
+    }
+  }
+</style>

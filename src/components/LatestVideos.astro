@@ -1,7 +1,7 @@
 ---
 import VideoCard from './VideoCard.astro';
 import { getLatestVideos } from '../lib/youtube';
-import type { Unit } from '../lib/units';
+import { unitCode, type Unit } from '../lib/units';
 
 interface Props {
   unit: Unit;
@@ -12,38 +12,43 @@ interface Props {
 const { unit, heading, limit = 3 } = Astro.props;
 const videos = await getLatestVideos(unit.youtubeChannelId, limit);
 const channel = unit.links.youtube;
+const code = unitCode(unit);
 ---
 
-<section class="section" aria-labelledby={`latest-${unit.slug}`} data-reveal style={`--accent: ${unit.accent}`}>
+<section class="section" aria-labelledby={`latest-${unit.slug}`} style={`--accent: ${unit.accent}`}>
   <div class="container">
     <div class="section-head">
       <h2 id={`latest-${unit.slug}`}>{heading}</h2>
       {
         videos.length > 0 && channel && (
           <a class="text-link" href={`${channel}/videos`}>
-            All videos <span aria-hidden="true">→</span>
+            All videos on YouTube
           </a>
         )
       }
     </div>
+    <div class="ticks" aria-hidden="true"></div>
     {
       videos.length > 0 ? (
         <ul class="grid">
           {videos.map((video) => (
             <li>
-              <VideoCard video={video} />
+              <VideoCard video={video} code={code} />
             </li>
           ))}
         </ul>
       ) : (
-        <div class="empty">
-          <p class="label">In production</p>
-          <p class="empty-title">First documentary coming soon</p>
-          {channel && (
-            <a class="text-link" href={`${channel}?sub_confirmation=1`}>
-              Subscribe on YouTube to see it first <span aria-hidden="true">→</span>
-            </a>
-          )}
+        <div class="tag">
+          <span class="hole" aria-hidden="true" />
+          <div class="tag-body">
+            <p class="mono">{code} / entry 001 / in production</p>
+            <p class="tag-title">First documentary coming soon</p>
+            {channel && (
+              <a class="text-link" href={`${channel}?sub_confirmation=1`}>
+                Subscribe on YouTube to see it first
+              </a>
+            )}
+          </div>
         </div>
       )
     }
@@ -53,7 +58,8 @@ const channel = unit.links.youtube;
 <style>
   .grid {
     display: grid;
-    gap: 40px 24px;
+    gap: 48px 28px;
+    padding-top: 40px;
   }
 
   @media (min-width: 700px) {
@@ -62,25 +68,42 @@ const channel = unit.links.youtube;
     }
   }
 
-  .empty {
-    display: grid;
-    justify-items: start;
-    gap: 12px;
-    padding: 40px 28px;
-    border: 1px dashed var(--line);
-    border-radius: var(--radius);
-    background:
-      linear-gradient(var(--carbon) 1px, transparent 1px) 0 0 / 40px 40px,
-      linear-gradient(90deg, var(--carbon) 1px, transparent 1px) 0 0 / 40px 40px;
+  /* Empty state: a specimen tag waiting for its first entry */
+  .tag {
+    position: relative;
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    margin-top: 40px;
+    padding: clamp(28px, 5vw, 48px);
+    border: 1px dashed var(--line-strong);
+    background: repeating-linear-gradient(-45deg, rgb(148 163 184 / 0.04) 0 2px, transparent 2px 12px);
+    clip-path: polygon(28px 0, 100% 0, 100% 100%, 0 100%, 0 28px);
   }
 
-  .empty-title {
+  .hole {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: var(--obsidian);
+    box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.6);
+  }
+
+  .tag-body {
+    display: grid;
+    gap: 14px;
+    justify-items: start;
+  }
+
+  .tag-title {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(22px, 3vw, 30px);
-    line-height: 1.2;
-    letter-spacing: 0.04em;
+    font-size: var(--step-3);
+    line-height: 1.05;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    margin-bottom: 8px;
+    max-width: 18ch;
   }
 </style>

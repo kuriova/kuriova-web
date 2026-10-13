@@ -56,3 +56,8 @@ export function profileUrls(units: Unit[]): string[] {
 export function unitTitle(unit: Unit): string {
   return unit.title ?? `${unit.name}: videos and channels`;
 }
+
+/** Catalogue code: K + the first letter of the subline (KS, KH, KT). */
+export function unitCode(unit: Unit): string {
+  return `K${subline(unit).charAt(0).toUpperCase()}`;
+}

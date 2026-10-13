@@ -2,6 +2,7 @@
 import '@fontsource/space-grotesk/latin-700.css';
 import '@fontsource/inter/latin-500.css';
 import '@fontsource/inter/latin-600.css';
+import '@fontsource/space-mono/latin-400.css';
 import '../styles/tokens.css';
 import displayFont from '@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2?url';
 import textFont from '@fontsource/inter/files/inter-latin-500-normal.woff2?url';
@@ -104,8 +105,5 @@ const beacon = site.analyticsToken ? JSON.stringify({ token: site.analyticsToken
       <slot />
     </main>
     <Footer />
-    <script>
-      import '../scripts/reveal';
-    </script>
   </body>
 </html>

@@ -4,72 +4,69 @@ import type { Video } from '../lib/youtube';
 
 interface Props {
   video: Video;
+  /** The unit's catalogue code, shown with the date. */
+  code: string;
 }
 
-const { video } = Astro.props;
+const { video, code } = Astro.props;
 ---
 
 <a class="video" href={video.url}>
-  <span class="thumb">
+  <span class="thumb reg">
     <img src={video.thumbnail} alt="" width="480" height="360" loading="lazy" decoding="async" />
   </span>
+  <span class="mono meta">{code} / <time datetime={video.published}>{formatDate(video.published)}</time></span>
   <h3>{video.title}</h3>
-  <time datetime={video.published}>{formatDate(video.published)}</time>
 </a>
 
 <style>
   .video {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: 12px;
     text-decoration: none;
+    --reg: var(--line-strong);
   }
 
   .thumb {
     display: block;
     aspect-ratio: 16 / 9;
-    overflow: hidden;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
     background: var(--carbon);
-    transition:
-      transform 150ms ease,
-      border-color 150ms ease;
+    outline: 1px solid var(--line);
+    outline-offset: -1px;
   }
 
-  /* hqdefault is 4:3 with letterbox bars; cover crops them away. */
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    filter: saturate(0.85) contrast(1.05);
+    transition: filter 240ms ease;
+  }
+
+  .meta {
+    margin-top: 6px;
   }
 
   h3 {
     font-family: var(--font-text);
     font-weight: 600;
-    font-size: 18px;
-    line-height: 1.4;
+    font-size: 19px;
+    line-height: 1.35;
     letter-spacing: 0;
+    text-wrap: pretty;
   }
 
-  time {
-    color: var(--mist);
-    font-size: 15px;
+  .video:hover {
+    --reg: var(--accent);
   }
 
-  .video:hover .thumb {
-    border-color: var(--accent);
+  .video:hover img {
+    filter: none;
   }
 
   .video:hover h3 {
     text-decoration: underline;
     text-decoration-color: var(--accent);
     text-underline-offset: 4px;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .video:hover .thumb {
-      transform: translateY(-2px);
-    }
   }
 </style>

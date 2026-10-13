@@ -45,16 +45,48 @@ const year = new Date().getFullYear();
         </ul>
       </div>
     </div>
-    <p class="legal">© {year} Kuriova</p>
+    <div class="colophon">
+      <p class="legal">© {year} Kuriova</p>
+      <p class="mono">Set in Space Grotesk, Inter and Space Mono.</p>
+    </div>
+    <p class="giant" aria-hidden="true">Kuriova</p>
   </div>
 </footer>
 
 <style>
   .site-footer {
+    position: relative;
+    overflow: hidden;
     margin-top: var(--section);
-    padding-block: 56px 40px;
-    border-top: 1px solid var(--line);
+    padding-block: 64px 0;
+    border-top: 1px solid var(--line-strong);
     font-size: 16px;
+    background: linear-gradient(180deg, var(--carbon), var(--obsidian) 60%);
+  }
+
+  .colophon {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+
+  /* The wordmark as an outline, cut off by the bottom edge of the page */
+  .giant {
+    margin: 32px 0 -0.22em;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(64px, 19vw, 290px);
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--line-strong);
+    white-space: nowrap;
+    user-select: none;
   }
 
   .grid {
@@ -110,7 +142,6 @@ const year = new Date().getFullYear();
   }
 
   .legal {
-    margin-top: 48px;
     color: var(--mist);
     font-size: 14px;
   }

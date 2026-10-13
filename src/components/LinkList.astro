@@ -10,6 +10,8 @@ interface Props {
 
 const { unit, variant = 'icons' } = Astro.props;
 const links = platformLinks(unit);
+// The handle at the end of each profile URL, shown on the button variant.
+const handle = (url: string) => '@' + (new URL(url).pathname.split('/').filter(Boolean).pop() ?? '').replace(/^@/, '');
 ---
 
 {
@@ -28,6 +30,7 @@ const links = platformLinks(unit);
                 {link.label}
                 <span class="sr-only"> ({unit.name})</span>
               </span>
+              <span class="handle mono" aria-hidden="true">{handle(link.url)}</span>
             )}
           </a>
         </li>
@@ -49,7 +52,7 @@ const links = platformLinks(unit);
     width: 44px;
     height: 44px;
     border: 1px solid var(--line);
-    border-radius: 999px;
+    border-radius: 2px;
     color: var(--mist);
     transition:
       color 150ms ease,
@@ -82,10 +85,8 @@ const links = platformLinks(unit);
       transform 150ms ease;
   }
 
-  .buttons a::after {
-    content: '→';
+  .handle {
     margin-left: auto;
-    color: var(--mist);
   }
 
   .buttons a:hover {

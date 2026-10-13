@@ -1,0 +1,231 @@
+---
+/**
+ * The scale ruler: a log scale from an atom (10⁻¹⁰ m) to the observable universe (10²⁶ m),
+ * with a unit's pillars drawn as the ranges they cover. It draws itself once on load
+ * (CSS only); with reduced motion it simply appears.
+ */
+interface Props {
+  /** Pillar names from the unit file; known ones become bands on the ruler. */
+  pillars?: string[];
+  caption: string;
+}
+
+const { pillars = [], caption } = Astro.props;
+
+const MIN = -10;
+const MAX = 27;
+const at = (exp: number) => `${(((exp - MIN) / (MAX - MIN)) * 100).toFixed(2)}%`;
+
+// Space Mono has no superscript digits, so exponents use <sup> with a true minus sign.
+const exponent = (exp: number) => String(exp).replace('-', '−');
+
+// Typical sizes in metres, as exponents (log10).
+const objects = [
+  { name: 'Atom', exp: -10 },
+  { name: 'Virus', exp: -7 },
+  { name: 'Red blood cell', exp: -5.1 },
+  { name: 'You', exp: 0.23, here: true },
+  { name: 'Everest', exp: 3.94 },
+  { name: 'Earth', exp: 7.1 },
+  { name: 'Sun', exp: 9.14 },
+  { name: 'Solar System', exp: 12.95 },
+  { name: 'Milky Way', exp: 21 },
+  { name: 'Observable universe', exp: 26.94 },
+];
+
+// Where each Science pillar sits on the scale. Unknown pillars are skipped.
+const RANGES: Record<string, [number, number, number]> = {
+  'Body & Mind': [-10, 0.6, 0],
+  Earth: [0.6, 7.1, 0],
+  Space: [7.1, 27, 0],
+  Tech: [-8.5, 7.1, 1],
+};
+const bands = pillars.flatMap((name) => {
+  const r = RANGES[name];
+  return r ? [{ name, from: r[0], to: r[1], row: r[2] }] : [];
+});
+const decades = [-10, -5, 0, 5, 10, 15, 20, 25];
+---
+
+<div class="ruler-scroll" tabindex="0" role="region" aria-label="Scale ruler, scrolls sideways">
+  <figure class="ruler">
+    {
+      bands.length > 0 && (
+        <div class="bands" aria-hidden="true">
+          {bands.map((b, i) => (
+            <span class="band" style={`left:${at(b.from)};width:calc(${at(b.to)} - ${at(b.from)});--row:${b.row};--i:${i}`}>
+              {b.name}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
+    <div class="scale" aria-hidden="true">
+      {
+        decades.map((e) => (
+          <span class="decade" style={`left:${at(e)}`}>
+            10<sup>{exponent(e)}</sup> m
+          </span>
+        ))
+      }
+    </div>
+
+    <ol class="objects">
+      {
+        objects.map((o, i) => (
+          <li class:list={['object', { here: o.here }]} style={`left:${at(o.exp)};--i:${i};--row:${i % 2}`}>
+            <span class="name">{o.name}</span>
+          </li>
+        ))
+      }
+    </ol>
+    <figcaption class="sr-only">{caption}</figcaption>
+  </figure>
+</div>
+
+<style>
+  .ruler-scroll {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+    padding-bottom: 8px;
+  }
+
+  .ruler-scroll:focus-visible {
+    outline-offset: 6px;
+  }
+
+  .ruler {
+    position: relative;
+    min-width: 860px;
+    margin: 0;
+    padding: 0 0 6px;
+  }
+
+  /* Pillar ranges above the scale */
+  .bands {
+    position: relative;
+    height: 64px;
+  }
+
+  .band {
+    position: absolute;
+    top: calc(var(--row) * 30px);
+    height: 24px;
+    display: flex;
+    align-items: center;
+    padding-inline: 8px;
+    border-left: 2px solid var(--accent);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 22%, transparent), color-mix(in srgb, var(--accent) 4%, transparent));
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--polar);
+    white-space: nowrap;
+    overflow: hidden;
+    transform-origin: left;
+    animation: grow 700ms cubic-bezier(0.2, 0.7, 0.2, 1) calc(500ms + var(--i) * 140ms) backwards;
+  }
+
+  /* The scale itself: a tick per decade, a longer one every fifth */
+  .scale {
+    position: relative;
+    height: 44px;
+    border-bottom: 1px solid var(--line-strong);
+    background:
+      repeating-linear-gradient(90deg, var(--line-strong) 0 1px, transparent 1px calc(100% / 37 * 5)) left bottom / 100% 22px no-repeat,
+      repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px calc(100% / 37)) left bottom / 100% 10px no-repeat,
+      repeating-linear-gradient(90deg, rgb(148 163 184 / 0.1) 0 1px, transparent 1px calc(100% / 74)) left bottom / 100% 5px no-repeat;
+    animation: draw 1100ms cubic-bezier(0.6, 0, 0.2, 1) 100ms backwards;
+  }
+
+  .decade sup {
+    font-size: 0.75em;
+    line-height: 0;
+    vertical-align: 0.55em;
+  }
+
+  .decade {
+    position: absolute;
+    top: 0;
+    transform: translateX(4px);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--mist);
+    white-space: nowrap;
+  }
+
+  /* Objects hang below the scale on two staggered rows */
+  .objects {
+    position: relative;
+    height: 78px;
+  }
+
+  .object {
+    position: absolute;
+    top: 0;
+    height: calc(18px + var(--row) * 30px);
+    border-left: 1px solid var(--line-strong);
+    animation: drop 420ms ease-out calc(900ms + var(--i) * 70ms) backwards;
+  }
+
+  .name {
+    position: absolute;
+    bottom: -22px;
+    left: -1px;
+    padding-left: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--polar);
+    white-space: nowrap;
+  }
+
+  .object:last-child .name {
+    left: auto;
+    right: 0;
+    padding: 0 6px 0 0;
+  }
+
+  .here {
+    border-left: 2px solid var(--accent);
+  }
+
+  .here::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+
+  .here .name {
+    color: var(--accent);
+  }
+
+  @keyframes draw {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  @keyframes grow {
+    from {
+      transform: scaleX(0);
+      opacity: 0;
+    }
+  }
+
+  @keyframes drop {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+</style>

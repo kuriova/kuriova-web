@@ -5,7 +5,7 @@ import { site } from '../site';
 // Values must match TOPICS in api/contact.ts.
 const topics = [
   ['sponsorship', 'Sponsorship'],
-  ['licensing', 'Licensing footage or graphics'],
+  ['licensing', 'Licensing'],
   ['collaboration', 'Collaboration'],
   ['press', 'Press'],
   ['feedback', 'Feedback or a correction'],
@@ -21,43 +21,63 @@ const topics = [
     <div class="grid-bg" aria-hidden="true"></div>
     <div class="container layout">
       <div class="intro">
-        <p class="label">Contact</p>
         <h1>Get in touch.</h1>
         <p class="lede">
           Sponsorships, licensing, collaborations, press, or a correction to one of our videos. Tell us a little and
           we’ll reply by email.
         </p>
-        <p class="muted alt">Prefer email? Write to <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+        <dl class="facts">
+          <div>
+            <dt class="mono">replies from</dt>
+            <dd>{site.email}</dd>
+          </div>
+          <div>
+            <dt class="mono">prefer email?</dt>
+            <dd><a href={`mailto:${site.email}`}>Write to us directly</a></dd>
+          </div>
+        </dl>
       </div>
 
-      <div class="panel">
+      <div class="slip">
+        <div class="slip-head">
+          <span class="mono">Enquiry slip</span>
+          <span class="mono">kuriova.com/contact</span>
+        </div>
+
         <form id="contact-form" class="form" method="post" action="/api/contact">
-          <div class="field">
-            <label for="cf-name">Name</label>
-            <input id="cf-name" name="name" type="text" autocomplete="name" required maxlength="100" aria-describedby="cf-name-error" />
-            <p class="error" id="cf-name-error" hidden></p>
+          <div class="row">
+            <div class="field">
+              <label for="cf-name">Name</label>
+              <input id="cf-name" name="name" type="text" autocomplete="name" required maxlength="100" aria-describedby="cf-name-error" />
+              <p class="error" id="cf-name-error" hidden></p>
+            </div>
+            <div class="field">
+              <label for="cf-email">Email</label>
+              <input id="cf-email" name="email" type="email" autocomplete="email" required maxlength="200" aria-describedby="cf-email-error" />
+              <p class="error" id="cf-email-error" hidden></p>
+            </div>
           </div>
 
           <div class="field">
-            <label for="cf-email">Email</label>
-            <input id="cf-email" name="email" type="email" autocomplete="email" required maxlength="200" aria-describedby="cf-email-error" />
-            <p class="error" id="cf-email-error" hidden></p>
-          </div>
-
-          <div class="field">
-            <label for="cf-organisation">Organisation <span class="optional">(optional)</span></label>
+            <label for="cf-organisation">Organisation <span class="optional">optional</span></label>
             <input id="cf-organisation" name="organisation" type="text" autocomplete="organization" maxlength="120" aria-describedby="cf-organisation-error" />
             <p class="error" id="cf-organisation-error" hidden></p>
           </div>
 
-          <div class="field">
-            <label for="cf-topic">Topic</label>
-            <select id="cf-topic" name="topic" required aria-describedby="cf-topic-error">
-              <option value="" disabled selected>Choose a topic</option>
-              {topics.map(([value, label]) => <option value={value}>{label}</option>)}
-            </select>
+          <fieldset class="field topics" id="cf-topic" aria-describedby="cf-topic-error">
+            <legend>Topic</legend>
+            <div class="chips">
+              {
+                topics.map(([value, label], i) => (
+                  <label class="chip">
+                    <input type="radio" name="topic" value={value} required={i === 0} />
+                    <span>{label}</span>
+                  </label>
+                ))
+              }
+            </div>
             <p class="error" id="cf-topic-error" hidden></p>
-          </div>
+          </fieldset>
 
           <div class="field">
             <label for="cf-message">Message</label>
@@ -79,7 +99,7 @@ const topics = [
         </form>
 
         <div class="sent" id="contact-sent" hidden tabindex="-1">
-          <p class="label">Message sent</p>
+          <p class="stamp" aria-hidden="true">Received</p>
           <h2>Thanks, we’ve got it.</h2>
           <p class="muted">We read every message and reply from {site.email}.</p>
         </div>
@@ -96,7 +116,7 @@ const topics = [
   .contact {
     position: relative;
     overflow: hidden;
-    padding-block: clamp(56px, 9vw, 120px) 0;
+    padding-block: clamp(48px, 8vw, 112px) 0;
   }
 
   .grid-bg {
@@ -106,108 +126,238 @@ const topics = [
   .layout {
     position: relative;
     display: grid;
-    gap: 40px;
+    gap: 48px;
   }
 
-  @media (min-width: 900px) {
+  @media (min-width: 960px) {
     .layout {
-      grid-template-columns: 5fr 7fr;
-      gap: 64px;
+      grid-template-columns: 4fr 7fr;
+      gap: 72px;
       align-items: start;
     }
 
     .intro {
       position: sticky;
-      top: 40px;
+      top: 120px;
     }
   }
 
   .intro {
     display: grid;
-    gap: 20px;
-    justify-items: start;
+    gap: 24px;
+    align-content: start;
   }
 
-  .alt a {
+  .facts {
+    margin: 16px 0 0;
+    display: grid;
+    gap: 14px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+
+  .facts div {
+    display: grid;
+    gap: 2px;
+  }
+
+  .facts dd {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .facts a {
     color: var(--polar);
     text-decoration-color: var(--accent);
-    text-underline-offset: 3px;
+    text-underline-offset: 4px;
   }
 
-  .panel {
-    padding: clamp(24px, 4vw, 40px);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
+  /* The slip: a raised sheet with a perforated top edge */
+  .slip {
+    position: relative;
+    padding: 40px clamp(20px, 4vw, 44px) clamp(28px, 4vw, 44px);
     background: var(--carbon);
+    border: 1px solid var(--line);
+    box-shadow: 10px 10px 0 rgb(0 0 0 / 0.35);
+  }
+
+  .slip::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: radial-gradient(circle at 6px 6px, var(--obsidian) 4px, transparent 4.5px) 0 0 / 18px 12px repeat-x;
+  }
+
+  .slip-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    padding-bottom: 16px;
+    margin-bottom: 28px;
+    border-bottom: 1px dashed var(--line-strong);
   }
 
   .form {
     display: grid;
-    gap: 20px;
+    gap: 26px;
+  }
+
+  .row {
+    display: grid;
+    gap: 26px;
+  }
+
+  @media (min-width: 640px) {
+    .row {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   .field {
     display: grid;
     gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
   }
 
-  label {
+  label,
+  legend {
+    padding: 0;
     font-weight: 600;
     font-size: 16px;
   }
 
-  .optional {
-    color: var(--mist);
-    font-weight: 500;
+  legend {
+    margin-bottom: 10px;
   }
 
-  input,
-  select,
+  .optional {
+    margin-left: 6px;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--mist);
+  }
+
+  input[type='text'],
+  input[type='email'],
   textarea {
     width: 100%;
     min-height: 48px;
-    padding: 12px 14px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--obsidian);
+    padding: 10px 2px;
+    border: 0;
+    border-bottom: 1px solid var(--line-strong);
+    border-radius: 0;
+    background: transparent;
     color: var(--polar);
     font: inherit;
-    font-size: 17px;
+    font-size: 18px;
     line-height: 1.5;
+    transition: border-color 160ms ease;
   }
 
   textarea {
     resize: vertical;
     min-height: 168px;
-  }
-
-  select {
-    appearance: none;
-    background-image: linear-gradient(45deg, transparent 50%, var(--mist) 50%),
-      linear-gradient(135deg, var(--mist) 50%, transparent 50%);
-    background-position:
-      calc(100% - 20px) 50%,
-      calc(100% - 14px) 50%;
-    background-size: 6px 6px;
-    background-repeat: no-repeat;
-    padding-right: 40px;
+    padding: 12px;
+    border: 1px solid var(--line-strong);
+    background:
+      repeating-linear-gradient(transparent 0 31px, var(--line) 31px 32px) 0 11px,
+      transparent;
+    line-height: 32px;
   }
 
   input:hover,
-  select:hover,
   textarea:hover {
     border-color: var(--mist);
   }
 
-  input:focus-visible,
-  select:focus-visible,
+  input[type='text']:focus-visible,
+  input[type='email']:focus-visible,
   textarea:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 1px 0 0 var(--accent);
+  }
+
+  textarea:focus-visible {
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  /* Topic chips: radio buttons dressed as tags */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .chip {
+    position: relative;
+    font-weight: 500;
+    font-size: 15px;
+  }
+
+  .chip input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .chip span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 8px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    color: var(--mist);
+    transition:
+      color 140ms ease,
+      border-color 140ms ease,
+      background-color 140ms ease;
+  }
+
+  .chip span::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border: 1px solid currentColor;
+  }
+
+  .chip:hover span {
+    color: var(--polar);
+    border-color: var(--mist);
+  }
+
+  .chip input:checked + span {
+    color: var(--obsidian);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .chip input:checked + span::before {
+    background: var(--obsidian);
+  }
+
+  .chip input:focus-visible + span {
     outline: 2px solid var(--accent);
-    outline-offset: 1px;
-    border-color: transparent;
+    outline-offset: 3px;
   }
 
   [aria-invalid='true'] {
+    border-color: var(--danger) !important;
+  }
+
+  .topics[aria-invalid='true'] .chip span {
     border-color: var(--danger);
   }
 
@@ -225,10 +375,12 @@ const topics = [
   }
 
   .actions {
-    display: grid;
-    gap: 14px;
-    justify-items: start;
-    margin-top: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 24px;
+    padding-top: 22px;
+    border-top: 1px dashed var(--line-strong);
   }
 
   .actions button[disabled] {
@@ -237,6 +389,7 @@ const topics = [
   }
 
   .note {
+    flex: 1 1 260px;
     color: var(--mist);
     font-size: 15px;
   }
@@ -250,21 +403,40 @@ const topics = [
     display: none;
   }
 
-  .status {
-    font-size: 16px;
-  }
-
   .status.is-error {
     color: var(--danger);
   }
 
+  /* Sent: the slip gets stamped */
   .sent {
     display: grid;
-    gap: 14px;
+    gap: 16px;
+    justify-items: start;
+    padding: 24px 0 8px;
     outline: none;
+    scroll-margin-top: 120px;
+  }
+
+  .stamp {
+    padding: 8px 18px;
+    border: 3px double var(--accent);
+    font-family: var(--font-mono);
+    font-size: 22px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    transform: rotate(-6deg);
+    animation: stamp 420ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
   }
 
   .sent h2 {
-    font-size: clamp(24px, 3vw, 32px);
+    font-size: var(--step-3);
+  }
+
+  @keyframes stamp {
+    from {
+      opacity: 0;
+      transform: rotate(-6deg) scale(1.6);
+    }
   }
 </style>

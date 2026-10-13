@@ -13,7 +13,7 @@ const featured = await getFeaturedUnit();
     </a>
     <nav aria-label="Main">
       <ul>
-        <li class="wide"><a class="nav-link" href="/#channels">Channels</a></li>
+        <li class="wide"><a class="nav-link" href="/#channels">Catalogue</a></li>
         <li class="wide"><a class="nav-link" href="/#partners">Partners</a></li>
         <li class="wide"><a class="nav-link" href="/contact">Contact</a></li>
         <li>
@@ -28,9 +28,25 @@ const featured = await getFeaturedUnit();
 
 <style>
   .site-header {
-    position: relative;
-    z-index: 2;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgb(8 12 22 / 0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--line);
+  }
+
+  /* A ruler edge along the bottom of the bar */
+  .site-header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 6px;
+    background: repeating-linear-gradient(90deg, var(--line-strong) 0 1px, transparent 1px 40px);
+    pointer-events: none;
   }
 
   .bar {
@@ -38,7 +54,7 @@ const featured = await getFeaturedUnit();
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    min-height: 72px;
+    min-height: 68px;
   }
 
   .brand {
@@ -70,12 +86,15 @@ const featured = await getFeaturedUnit();
     padding-inline: 14px;
     color: var(--mist);
     font-weight: 600;
-    font-size: 16px;
+    font-size: 15px;
     text-decoration: none;
   }
 
   .nav-link:hover {
     color: var(--polar);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 6px;
   }
 
   /* Mobile: the mark plus the button. */

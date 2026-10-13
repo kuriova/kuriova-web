@@ -50,7 +50,7 @@ const soon = units.filter((u) => u.status === 'soon' && platformLinks(u).length 
     {
       soon.length > 0 && (
         <p class="soon label">
-          Coming soon: {soon.map((u) => u.name).join(' · ')}
+          Coming soon: {soon.map((u) => u.name).join(' / ')}
         </p>
       )
     }
@@ -102,12 +102,6 @@ const soon = units.filter((u) => u.status === 'soon' && platformLinks(u).length 
     border-radius: var(--radius);
     font-weight: 600;
     text-decoration: none;
-  }
-
-  .plain a::after {
-    content: '→';
-    margin-left: auto;
-    color: var(--mist);
   }
 
   .plain a:hover {

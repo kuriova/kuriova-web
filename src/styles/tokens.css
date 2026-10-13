@@ -1,29 +1,46 @@
-/* Brand tokens (Brand bible v1.1). Dark only in v1. */
+/*
+ * Kuriova design tokens. Brand bible v1.1 colours, dark only.
+ * Direction: a specimen archive. Rulers, catalogue codes, registration marks and
+ * film grain make "curiosity, with rigor" visible.
+ */
 :root {
   --obsidian: #080c16; /* page */
-  --carbon: #0f172a; /* cards, grid lines */
+  --carbon: #0f172a; /* panels, grid */
+  --carbon-2: #141d33; /* raised panels, fields */
   --polar: #f8fafc; /* text */
-  --mist: #94a3b8; /* secondary text, dividers */
+  --mist: #94a3b8; /* secondary text */
   --accent: #00e5ff; /* set per unit; Science = cyan */
   --danger: #fca5a5; /* form errors only; ~10:1 on Obsidian */
 
+  --line: rgb(148 163 184 / 0.18); /* hairlines */
+  --line-strong: rgb(148 163 184 / 0.42); /* ruler majors, marks */
+
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-text: 'Inter', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace; /* codes, dates, measurements */
   --track-display: 0.12em; /* Brand bible: display tracking +120 */
   --track-label: 0.22em; /* Brand bible: sublines +220 */
 
-  --max: 1120px;
-  --gutter: clamp(16px, 4vw, 40px);
-  --radius: 14px;
-  --line: rgb(148 163 184 / 0.22); /* Mist at low strength, for hairlines */
-  --section: 72px;
+  /* Type scale: perfect fourth from 18px */
+  --step--1: 15px;
+  --step-0: 18px;
+  --step-1: 24px;
+  --step-2: clamp(26px, 3vw, 32px);
+  --step-3: clamp(30px, 4.2vw, 42px);
+  --step-4: clamp(36px, 5.6vw, 56px);
+  --step-5: clamp(44px, 8.4vw, 100px);
+
+  --max: 1200px;
+  --gutter: clamp(16px, 4vw, 48px);
+  --radius: 6px;
+  --section: 80px;
 
   color-scheme: dark;
 }
 
 @media (min-width: 900px) {
   :root {
-    --section: 120px;
+    --section: 136px;
   }
 }
 
@@ -41,6 +58,7 @@ html {
 }
 
 body {
+  position: relative;
   margin: 0;
   min-height: 100vh;
   display: flex;
@@ -49,10 +67,21 @@ body {
   color: var(--polar);
   font-family: var(--font-text);
   font-weight: 500;
-  font-size: 18px;
+  font-size: var(--step-0);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Film grain over everything: a tiny tiled noise image, no script. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 main {
@@ -70,25 +99,26 @@ h3 {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.02;
   text-wrap: balance;
 }
 
 h1 {
-  font-size: clamp(36px, 6vw, 72px);
-  letter-spacing: var(--track-display);
+  font-size: var(--step-4);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 h2 {
-  font-size: clamp(26px, 3.4vw, 40px);
-  letter-spacing: var(--track-display);
+  font-size: var(--step-3);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 h3 {
-  font-size: 20px;
-  letter-spacing: 0.02em;
+  font-size: var(--step-1);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
 }
 
 p {
@@ -105,16 +135,16 @@ svg {
   max-width: 100%;
 }
 
-ul {
+ul,
+ol {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 :focus-visible {
-  outline: 2px solid var(--polar);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 4px;
 }
 
 ::selection {
@@ -135,12 +165,14 @@ ul {
   padding-block: var(--section) 0;
 }
 
+/* Section heading row: title left, a short fact in mono on the right. */
 .section-head {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: end;
   justify-content: space-between;
-  gap: 8px 24px;
+  gap: 12px 32px;
+  padding-bottom: 20px;
   margin-bottom: 40px;
 }
 
@@ -155,21 +187,58 @@ ul {
   mask-image: radial-gradient(ellipse 70% 80% at var(--grid-at, 30% 40%), #000 20%, transparent 75%);
 }
 
+/* A ruler edge: minor ticks every 8px, majors every 80px. Used as section dividers. */
+.ticks {
+  height: 14px;
+  border-bottom: 1px solid var(--line-strong);
+  background:
+    repeating-linear-gradient(90deg, var(--line-strong) 0 1px, transparent 1px 80px) left bottom / 100% 14px no-repeat,
+    repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 8px) left bottom / 100% 6px no-repeat;
+}
+
+/* Registration marks on two corners, as on a printed specimen sheet. */
+.reg {
+  position: relative;
+}
+
+.reg::before,
+.reg::after {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--reg, var(--line-strong)) 0 0) center / 1px 100% no-repeat,
+    linear-gradient(var(--reg, var(--line-strong)) 0 0) center / 100% 1px no-repeat;
+}
+
+.reg::before {
+  top: -8px;
+  left: -8px;
+}
+
+.reg::after {
+  right: -8px;
+  bottom: -8px;
+}
+
 /* Type helpers */
 
+.mono,
 .label {
-  font-family: var(--font-text);
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-weight: 400;
   font-size: 13px;
-  line-height: 1.4;
-  letter-spacing: var(--track-label);
-  text-transform: uppercase;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
   color: var(--mist);
 }
 
 .lede {
-  max-width: 40ch;
-  font-size: clamp(18px, 2vw, 21px);
+  max-width: 42ch;
+  font-size: clamp(18px, 1.8vw, 21px);
+  line-height: 1.55;
   color: var(--mist);
 }
 
@@ -193,9 +262,8 @@ ul {
   position: absolute;
   left: 16px;
   top: -100px;
-  z-index: 10;
+  z-index: 70;
   padding: 8px 16px;
-  border-radius: 8px;
   background: var(--polar);
   color: var(--obsidian);
   font-weight: 600;
@@ -206,27 +274,30 @@ ul {
   top: 16px;
 }
 
-/* Buttons */
+/* Buttons: squared like a label, with a misregistered print offset on hover. */
 
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 48px;
-  padding: 12px 24px;
-  border: 2px solid transparent;
-  border-radius: 999px;
+  min-height: 50px;
+  padding: 12px 22px;
+  border: 1px solid transparent;
+  border-radius: 2px;
   font-family: var(--font-text);
   font-weight: 600;
   font-size: 16px;
   line-height: 1.2;
   text-decoration: none;
   white-space: nowrap;
+  cursor: pointer;
   transition:
-    background-color 150ms ease,
-    border-color 150ms ease,
-    color 150ms ease;
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
 }
 
 .btn-accent {
@@ -234,22 +305,30 @@ ul {
   color: var(--obsidian);
 }
 
-.btn-accent:hover {
-  background: var(--polar);
+.btn-outline {
+  border-color: var(--line-strong);
+  color: var(--polar);
+  background: rgb(8 12 22 / 0.4);
 }
 
-.btn-outline {
-  border-color: var(--line);
-  color: var(--polar);
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--polar);
 }
 
 .btn-outline:hover {
   border-color: var(--polar);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+.btn:active {
+  transform: none;
+  box-shadow: none;
 }
 
 .btn-sm {
   min-height: 40px;
-  padding: 8px 18px;
+  padding: 8px 16px;
   font-size: 15px;
 }
 
@@ -264,21 +343,6 @@ ul {
 
 .text-link:hover {
   color: var(--accent);
-}
-
-/* Motion: one fade-and-rise on scroll, set up by src/scripts/reveal.ts */
-
-@media (prefers-reduced-motion: no-preference) {
-  [data-reveal] {
-    transition:
-      opacity 250ms ease-out,
-      transform 250ms ease-out;
-  }
-
-  .reveal-pending {
-    opacity: 0;
-    transform: translateY(16px);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

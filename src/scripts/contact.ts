@@ -18,10 +18,8 @@ if (form && status && sent) {
 
   // /contact?topic=sponsorship preselects the topic.
   const topic = new URLSearchParams(location.search).get('topic');
-  const select = form.elements.namedItem('topic');
-  if (topic && select instanceof HTMLSelectElement && [...select.options].some((o) => o.value === topic)) {
-    select.value = topic;
-  }
+  const chip = topic ? form.querySelector<HTMLInputElement>(`input[name="topic"][value="${CSS.escape(topic)}"]`) : null;
+  if (chip) chip.checked = true;
 
   const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
 
@@ -62,7 +60,8 @@ if (form && status && sent) {
   function showFieldErrors(errors: Record<string, string>) {
     let first: HTMLElement | null = null;
     for (const name of ['name', 'email', 'organisation', 'topic', 'message']) {
-      const input = form!.elements.namedItem(name);
+      // Topic is a group of radios; its fieldset carries the error state.
+      const input = name === 'topic' ? document.getElementById('cf-topic') : form!.elements.namedItem(name);
       const message = document.getElementById(`cf-${name}-error`);
       if (!(input instanceof HTMLElement) || !message) continue;
       const error = errors[name];
@@ -70,7 +69,7 @@ if (form && status && sent) {
       message.hidden = !error;
       if (error) {
         input.setAttribute('aria-invalid', 'true');
-        first ??= input;
+        first ??= name === 'topic' ? form!.querySelector<HTMLElement>('input[name="topic"]') : input;
       } else {
         input.removeAttribute('aria-invalid');
       }
